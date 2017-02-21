@@ -18,7 +18,7 @@
 #   Tim Kinnane @ 4thParty
 
 botName = process.env.ROCKETCHAT_USER or robot.name
-welcomeMessage = process.env.WELCOME_MESSAGE or "Welcome, I'm @#{ botName }. If you need help just reply with `help`"
+welcomeMessage = -> process.env.WELCOME_MESSAGE or "Welcome, I'm @#{ botName }. If you need help just reply with `help`"
 directWelcome = if process.env.DIRECT_WELCOME == 'false' then false else true
 globalWelcome = if process.env.GLOBAL_WELCOME == 'false' then false else true
 isDebug = if process.env.HUBOT_LOG_LEVEL == 'debug' then true else false
@@ -27,7 +27,7 @@ module.exports = (robot) ->
 
   welcoming = if globalWelcome then 'any new users' else 'new users in room'
   robot.logger.info "Welcome script is running, will send to #{ welcoming } saying:"
-  robot.logger.info "\"#{ welcomeMessage }\""
+  robot.logger.info "\"#{ welcomeMessage() }\""
 
   # get robot brain collection pointer when DB merged in
   robot.brain.on 'loaded', =>
@@ -64,9 +64,9 @@ module.exports = (robot) ->
     known = userIsKnown user
     if forced or not known
       if direct
-        msg.sendDirect welcomeMessage
+        msg.sendDirect welcomeMessage()
       else
-        msg.send welcomeMessage
+        msg.send welcomeMessage()
       unless known
         rememberUser user
 
